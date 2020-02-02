@@ -8,6 +8,8 @@ namespace Playground.Blazor.Api
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
 
+    using Playground.Blazor.Core;
+
     internal sealed class Startup
     {
         private readonly IConfiguration configuration;
@@ -24,6 +26,15 @@ namespace Playground.Blazor.Api
             services.AddControllers().AddControllersAsServices();
 
             services.AddHealthChecks();
+            services.AddCoreServices();
+            services.AddCors(c => c.AddDefaultPolicy(
+                p =>
+                    {
+                        p.AllowCredentials();
+                        p.SetIsOriginAllowed(_ => true);
+                        p.AllowAnyMethod();
+                        p.AllowAnyHeader();
+                    }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +46,7 @@ namespace Playground.Blazor.Api
             }
 
             app
+                .UseCors()
                 .UseHealthChecks("/health", new HealthCheckOptions { AllowCachingResponses = false, })
                 .UseRouting()
                 .UseEndpoints(

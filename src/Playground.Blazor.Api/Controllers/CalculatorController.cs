@@ -2,6 +2,7 @@
 {
     using Microsoft.AspNetCore.Mvc;
 
+    [ApiController]
     [Route("calc")]
     public class CalculatorController : ControllerBase
     {

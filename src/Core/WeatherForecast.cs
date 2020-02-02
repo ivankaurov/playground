@@ -1,8 +1,8 @@
-namespace Playground.Blazor.Server.Application.Data
+namespace Playground.Blazor.Core
 {
     using System;
 
-    public class WeatherForecast
+    public sealed class WeatherForecast
     {
         public DateTime Date { get; set; }
 

@@ -6,7 +6,7 @@ namespace Playground.Blazor.Server.Application
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
 
-    using Playground.Blazor.Server.Application.Data;
+    using Playground.Blazor.Core;
 
     public class Startup
     {
@@ -23,7 +23,7 @@ namespace Playground.Blazor.Server.Application
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
+            services.AddCoreServices(opt => opt.BaseUri = "http://localhost:5000/");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
