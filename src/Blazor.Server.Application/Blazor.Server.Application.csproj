@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AssemblyName>Playground.Blazor.Api</AssemblyName>
-    <RootNamespace>Playground.Blazor.Api</RootNamespace>
+    <AssemblyName>Playground.Blazor.Server.Application</AssemblyName>
+    <RootNamespace>Playground.Blazor.Server.Application</RootNamespace>
     <Nullable>Enable</Nullable>
   </PropertyGroup>
 
