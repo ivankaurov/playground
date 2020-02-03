@@ -3,10 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
-    using System.Runtime.CompilerServices;
     using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
+
+    using Microsoft.Extensions.Options;
 
     internal sealed class HttpWeatherService : CountableBase, IHttpWeatherForecastService
     {
@@ -15,9 +16,12 @@
 
         private readonly HttpClient client;
 
-        public HttpWeatherService(HttpClient client)
+        private readonly HttpWeatherServiceConfiguration configuration;
+
+        public HttpWeatherService(HttpClient client, IOptions<HttpWeatherServiceConfiguration> configuration)
         {
             this.client = client;
+            this.configuration = configuration.Value;
         }
 
         public async Task<IReadOnlyCollection<WeatherForecast>> GetForecast(
@@ -25,7 +29,7 @@
             CancellationToken cancellationToken = default)
         {
             using var response = await this.client.GetAsync(
-                                     $"/weather?startDate={startDate:yyyyMMdd}",
+                                     $"{this.configuration.BaseUri}weather?startDate={startDate:yyyyMMdd}",
                                      HttpCompletionOption.ResponseHeadersRead,
                                      cancellationToken);
 

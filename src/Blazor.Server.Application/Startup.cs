@@ -23,7 +23,8 @@ namespace Playground.Blazor.Server.Application
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddCoreServices(opt => opt.BaseUri = "http://localhost:5000/");
+            services.AddWeatherForecastService()
+                .AddHttpWeatherForecastServiceWithHttpClient(opt => opt.BaseUri = "http://localhost:5000/");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

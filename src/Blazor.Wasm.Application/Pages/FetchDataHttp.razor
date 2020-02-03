@@ -1,10 +1,8 @@
 ﻿@namespace Playground.Blazor.Wasm.Application.Pages
 
 @page "/fetchdatahttp"
-@using Microsoft.Extensions.Options
 @using Playground.Blazor.Core
-@inject HttpClient Http
-@inject IOptions<HttpWeatherServiceConfiguration> Options
+@inject IHttpWeatherForecastService Srv;
 
 <h1>Weather forecast</h1>
 
@@ -16,6 +14,7 @@
 }
 else
 {
+    <p>Instance count: @Srv.InstanceCount, Instance number: @Srv.InstanceNumber</p>
     <table class="table">
         <thead>
             <tr>
@@ -44,8 +43,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var baseAddress = Options.Value.BaseUri;
-        forecasts = await Http.GetJsonAsync<WeatherForecast[]>($"{baseAddress}weather?startDate={DateTime.Now:yyyyMMdd}");
+        forecasts = await Srv.GetForecast(DateTime.Now);
     }
 
 }

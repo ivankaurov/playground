@@ -26,7 +26,7 @@ namespace Playground.Blazor.Api
             services.AddControllers().AddControllersAsServices();
 
             services.AddHealthChecks();
-            services.AddCoreServices();
+            services.AddWeatherForecastService();
             services.AddCors(c => c.AddDefaultPolicy(
                 p =>
                     {
