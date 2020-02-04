@@ -44,6 +44,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Srv.GetForecast(DateTime.Now);
+        forecasts = await Srv.GetForecast(DateTime.Now).ToArrayAsync();
     }
 }

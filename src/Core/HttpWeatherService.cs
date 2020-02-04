@@ -3,9 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
+    using System.Runtime.CompilerServices;
     using System.Text.Json;
     using System.Threading;
-    using System.Threading.Tasks;
 
     using Microsoft.Extensions.Options;
 
@@ -24,9 +24,9 @@
             this.configuration = configuration.Value;
         }
 
-        public async Task<IReadOnlyCollection<WeatherForecast>> GetForecast(
+        public async IAsyncEnumerable<WeatherForecast> GetForecast(
             DateTime startDate,
-            CancellationToken cancellationToken = default)
+            [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             using var response = await this.client.GetAsync(
                                      $"{this.configuration.BaseUri}weather?startDate={startDate:yyyyMMdd}",
@@ -35,10 +35,13 @@
 
             response.EnsureSuccessStatusCode();
             await using var responseStream = await response.Content.ReadAsStreamAsync();
-            return await JsonSerializer.DeserializeAsync<WeatherForecast[]>(
-                       responseStream,
-                       SerializerOptions,
-                       cancellationToken);
+            foreach (var forecastElement in await JsonSerializer.DeserializeAsync<WeatherForecast[]>(
+                                                responseStream,
+                                                SerializerOptions,
+                                                cancellationToken))
+            {
+                yield return forecastElement;
+            }
         }
     }
 }
