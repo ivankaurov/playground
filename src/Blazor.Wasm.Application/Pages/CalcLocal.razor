@@ -1,0 +1,32 @@
+﻿@namespace Playground.Blazor.Wasm.Application.Pages
+
+@page "/calclocal"
+@using Playground.Blazor.Core.Calc
+@inject ICalcService Srv
+
+<h1>Multiply service</h1>
+
+<p>This component demonstrates calling methods on local service.</p>
+<p>
+    Value A:<input @bind-value="@valueA" @bind-value:event="oninput" onchange="LoadResult"/>
+</p>
+<p>
+    Value B:<input @bind-value="@valueB" @bind-value:event="oninput" />
+</p>
+<p>
+    Result: @result
+</p>
+
+@code {
+
+    private double? valueA = null;
+
+    private double? valueB = null;
+
+    private double? result = null;
+
+    private async Task LoadResult()
+    {
+        this.result = this.valueA.HasValue && this.valueB.HasValue ? (double?)(await Srv.Multiply(valueA.Value, valueB.Value)) : null;
+    }
+}

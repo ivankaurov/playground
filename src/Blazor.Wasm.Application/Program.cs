@@ -1,8 +1,10 @@
 ﻿namespace Playground.Blazor.Wasm.Application
 {
     using Microsoft.AspNetCore.Blazor.Hosting;
+    using Microsoft.Extensions.DependencyInjection;
 
     using Playground.Blazor.Core;
+    using Playground.Blazor.Core.Calc;
 
     public class Program
     {
@@ -12,8 +14,14 @@
         }
 
         public static IWebAssemblyHostBuilder CreateHostBuilder(string[] args) =>
-            BlazorWebAssemblyHost.CreateDefaultBuilder().ConfigureServices(
-                s => s.AddHttpWeatherForecastService(opt => opt.BaseUri = "http://localhost:5000/")
-                    .AddWeatherForecastService()).UseBlazorStartup<Startup>();
+            BlazorWebAssemblyHost.CreateDefaultBuilder().ConfigureServices(ConfigureServices)
+                .UseBlazorStartup<Startup>();
+
+        private static void ConfigureServices(WebAssemblyHostBuilderContext context, IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddWeatherForecastService()
+                .AddHttpWeatherForecastService(opt => opt.BaseUri = "http://localhost:5000/").AddCalcService()
+                .AddHttpCalcService(opt => opt.BaseUri = "http://localhost:5000/");
+        }
     }
 }
