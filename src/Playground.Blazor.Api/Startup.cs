@@ -9,6 +9,7 @@ namespace Playground.Blazor.Api
     using Microsoft.Extensions.Hosting;
 
     using Playground.Blazor.Core;
+    using Playground.Blazor.Core.Calc;
 
     internal sealed class Startup
     {
@@ -26,7 +27,7 @@ namespace Playground.Blazor.Api
             services.AddControllers().AddControllersAsServices();
 
             services.AddHealthChecks();
-            services.AddWeatherForecastService();
+            services.AddWeatherForecastService().AddCalcService();
             services.AddCors(c => c.AddDefaultPolicy(
                 p =>
                     {
