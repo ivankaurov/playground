@@ -8,10 +8,18 @@
 
 <p>This component demonstrates calling methods on local service.</p>
 <p>
-    Value A:<input @bind-value="@valueA" @bind-value:event="oninput" onchange="LoadResult"/>
+    Value A:<input value="@valueA" @oninput="@(async (ChangeEventArgs e) =>
+                                                  {
+                                                      valueA = this.ValueChanged(e, valueA);
+                                                      await LoadResult();
+                                                  })"/>
 </p>
 <p>
-    Value B:<input @bind-value="@valueB" @bind-value:event="oninput" />
+    Value B:<input value="@valueB" @oninput="@(async (ChangeEventArgs e) =>
+                                                 {
+                                                     valueB = this.ValueChanged(e, valueB);
+                                                     await LoadResult();
+                                                 })" />
 </p>
 <p>
     Result: @result
@@ -24,6 +32,11 @@
     private double? valueB = null;
 
     private double? result = null;
+
+    private double? ValueChanged(ChangeEventArgs e, double? initialValue)
+    {
+        return double.TryParse(e.Value?.ToString(), out var res) ? (double?)res : initialValue;
+    }
 
     private async Task LoadResult()
     {
