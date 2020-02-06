@@ -6,6 +6,7 @@
     using Playground.Blazor.Core;
     using Playground.Blazor.Core.Calc;
     using Playground.Blazor.Core.Clock;
+    using Playground.Blazor.Shared.Http;
 
     public class Program
     {
@@ -22,7 +23,8 @@
         {
             serviceCollection.AddWeatherForecastService()
                 .AddHttpWeatherForecastService(opt => opt.BaseUri = "http://localhost:5000/").AddCalcService()
-                .AddHttpCalcService(opt => opt.BaseUri = "http://localhost:5000/").AddClockService();
+                .AddHttpCalcService(opt => opt.BaseUri = "http://localhost:5000/").AddClockService()
+                .AddBlazorWasmHttpClientFactory();
         }
     }
 }

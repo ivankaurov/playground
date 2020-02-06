@@ -11,28 +11,11 @@
             return serviceCollection.AddSingleton<ICalcService, CalcService>();
         }
 
-        public static IServiceCollection AddHttpCalcServiceWithHttpClient(
-            this IServiceCollection serviceCollection,
-            Action<HttpCalcServiceConfiguration>? configureOptions = null)
-        {
-            serviceCollection.ConfigureHttpCalcService(configureOptions)
-                .AddHttpClient<IHttpCalcService, HttpCalcService>();
-
-            return serviceCollection;
-        }
-
         public static IServiceCollection AddHttpCalcService(
             this IServiceCollection serviceCollection,
             Action<HttpCalcServiceConfiguration>? configureOptions = null)
         {
-            return serviceCollection.AddTransient<IHttpCalcService, HttpCalcService>()
-                .ConfigureHttpCalcService(configureOptions);
-        }
-
-        private static IServiceCollection ConfigureHttpCalcService(
-            this IServiceCollection serviceCollection,
-            Action<HttpCalcServiceConfiguration>? configureOptions)
-        {
+            serviceCollection.AddHttpClient<IHttpCalcService, HttpCalcService>();
             if (configureOptions != null)
             {
                 serviceCollection.AddOptions<HttpCalcServiceConfiguration>().Configure(configureOptions);

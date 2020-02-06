@@ -26,7 +26,7 @@ namespace Playground.Blazor.Server.Application
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddWeatherForecastService()
-                .AddHttpWeatherForecastServiceWithHttpClient(opt => opt.BaseUri = "http://localhost:5000/")
+                .AddHttpWeatherForecastService(opt => opt.BaseUri = "http://localhost:5000/")
                 .AddCalcService().AddClockService();
         }
 
