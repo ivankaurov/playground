@@ -1,71 +1,7 @@
-﻿@namespace Playground.Blazor.Wasm.Application.Pages
+﻿@namespace Playground.Blazor.Server.Application.Pages
 
 @page "/calclocal"
 @using Playground.Blazor.Core.Calc
-@using Playground.Blazor.Core.Clock
-@using Playground.Blazor.Core.Events
 @inject ICalcService Srv
-@inject IEventBus EventBus
-@implements IDisposable
 
-<h1>Multiply service</h1>
-
-<p>This component demonstrates calling methods on local service.</p>
-<p>Current time is @lastEvent.ToString("HH:mm:ss")</p>
-<p>
-    Value A:<input value="@valueA" @oninput="@(async (ChangeEventArgs e) =>
-                                                  {
-                                                      this.ValueChanged(e, ref valueA);
-                                                      await LoadResult();
-                                                  })"/>
-</p>
-<p>
-    Value B:<input value="@valueB" @oninput="@(async (ChangeEventArgs e) =>
-                                                 {
-                                                     this.ValueChanged(e, ref valueB);
-                                                     await LoadResult();
-                                                 })" />
-</p>
-<p>
-    Result: @result
-</p>
-
-@code {
-
-    private double? valueA = null;
-
-    private double? valueB = null;
-
-    private double? result = null;
-
-    private IDisposable? handler = null;
-
-    private DateTimeOffset lastEvent = DateTimeOffset.MinValue;
-
-    public void Dispose()
-    {
-        this.handler?.Dispose();
-    }
-
-    protected override void OnInitialized()
-    {
-        this.handler = this.EventBus.Handle<ClockArgs>(async args => await this.InvokeAsync(() =>
-            {
-                this.lastEvent = args.RaiseTime;
-                this.StateHasChanged();
-            }));
-    }
-
-    private void ValueChanged(ChangeEventArgs e, ref double? initialValue)
-    {
-        if (double.TryParse(e.Value?.ToString(), out var res))
-        {
-            initialValue = res;
-        }
-    }
-
-    private async Task LoadResult()
-    {
-        this.result = this.valueA.HasValue && this.valueB.HasValue ? (double?)(await Srv.Multiply(valueA.Value, valueB.Value)) : null;
-    }
-}
+<CalcComponent Srv="@Srv" Title="local service" />
