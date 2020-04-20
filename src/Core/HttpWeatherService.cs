@@ -7,29 +7,27 @@
     using System.Text.Json;
     using System.Threading;
 
-    using Microsoft.Extensions.Options;
-
     internal sealed class HttpWeatherService : CountableBase, IHttpWeatherForecastService
     {
+        public const string HttpClientName = nameof(HttpWeatherService);
+
         private static readonly JsonSerializerOptions SerializerOptions =
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true, };
 
-        private readonly HttpClient client;
+        private readonly IHttpClientFactory httpClientFactory;
 
-        private readonly HttpWeatherServiceConfiguration configuration;
-
-        public HttpWeatherService(HttpClient client, IOptions<HttpWeatherServiceConfiguration> configuration)
+        public HttpWeatherService(IHttpClientFactory httpClientFactory)
         {
-            this.client = client;
-            this.configuration = configuration.Value;
+            this.httpClientFactory = httpClientFactory;
         }
 
         public async IAsyncEnumerable<WeatherForecast> GetForecast(
             DateTime startDate,
             [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            using var response = await this.client.GetAsync(
-                                     $"{this.configuration.BaseUri}weather?startDate={startDate:yyyyMMdd}",
+            using var client = this.httpClientFactory.CreateClient(HttpClientName);
+            using var response = await client.GetAsync(
+                                     $"weather?startDate={startDate:yyyyMMdd}",
                                      HttpCompletionOption.ResponseHeadersRead,
                                      cancellationToken);
 

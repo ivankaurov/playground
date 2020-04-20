@@ -3,6 +3,7 @@
     using System;
 
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Options;
 
     public static class ServiceCollectionExtensions
     {
@@ -15,7 +16,14 @@
             this IServiceCollection serviceCollection,
             Action<HttpWeatherServiceConfiguration>? configureOptions = null)
         {
-            serviceCollection.AddHttpClient<IHttpWeatherForecastService, HttpWeatherService>();
+            serviceCollection.AddHttpClient(HttpWeatherService.HttpClientName).ConfigureHttpClient(
+                (sp, client) =>
+                    {
+                        var options = sp.GetRequiredService<IOptions<HttpWeatherServiceConfiguration>>().Value;
+                        client.BaseAddress = new Uri(options.BaseUri);
+                    });
+
+            serviceCollection.AddSingleton<IHttpWeatherForecastService, HttpWeatherService>();
 
             if (configureOptions != null)
             {

@@ -1,30 +1,52 @@
 ﻿namespace Playground.Blazor.Wasm.Application
 {
-    using Microsoft.AspNetCore.Blazor.Hosting;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
 
     using Playground.Blazor.Core;
     using Playground.Blazor.Core.Calc;
     using Playground.Blazor.Core.Clock;
-    using Playground.Blazor.Shared.Http;
+    using Playground.Blazor.Core.Utils;
 
-    public class Program
+    internal static class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            await WebAssemblyHostBuilder
+                .CreateDefault(args)
+                .ConfigureServices()
+                .ConfigureComponents()
+                .Build()
+                .StartHostedServices()
+                .RunAsync();
         }
 
-        public static IWebAssemblyHostBuilder CreateHostBuilder(string[] args) =>
-            BlazorWebAssemblyHost.CreateDefaultBuilder().ConfigureServices(ConfigureServices)
-                .UseBlazorStartup<Startup>();
-
-        private static void ConfigureServices(WebAssemblyHostBuilderContext context, IServiceCollection serviceCollection)
+        private static WebAssemblyHostBuilder ConfigureServices(this WebAssemblyHostBuilder builder)
         {
-            serviceCollection.AddWeatherForecastService()
-                .AddHttpWeatherForecastService(opt => opt.BaseUri = "http://localhost:5000/").AddCalcService()
-                .AddHttpCalcService(opt => opt.BaseUri = "http://localhost:5000/").AddClockService()
-                .AddBlazorWasmHttpClientFactory();
+            builder.Services.AddWeatherForecastService()
+                .AddHttpWeatherForecastService(opt => opt.BaseUri = "http://localhost:5000/")
+                .AddCalcService()
+                .AddHttpCalcService(opt => opt.BaseUri = "http://localhost:5000/")
+                .AddClockService();
+            return builder;
+        }
+
+        private static WebAssemblyHostBuilder ConfigureComponents(this WebAssemblyHostBuilder builder)
+        {
+            builder.RootComponents.Add<App>("app");
+            return builder;
+        }
+
+        private static WebAssemblyHost StartHostedServices(this WebAssemblyHost webAssemblyHost)
+        {
+            var hostedServices = webAssemblyHost.Services.GetServices<IHostedService>();
+            Task.WhenAll(hostedServices.Select(s => s.StartAsync(CancellationToken.None))).Forget();
+            return webAssemblyHost;
         }
     }
 }
