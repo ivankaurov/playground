@@ -1,4 +1,4 @@
-﻿namespace Playground.IDP.Application.Clients
+﻿namespace Playground.IDP.Application.Config.Clients
 {
     using System;
     using System.Collections.Generic;
@@ -23,7 +23,7 @@
         public async Task<Client?> FindClientByIdAsync(string clientId)
         {
             var scopes = (await this.resourceStore.GetAllEnabledResourcesAsync()).ApiResources.SelectMany(s => s.Scopes.Select(s => s.Name)).ToList();
-            var cfg = this.clients.FirstOrDefault(c => c.Name.Equals(clientId, StringComparison.Ordinal));
+            var cfg = this.clients.FirstOrDefault(c => c.Id.Equals(clientId, StringComparison.Ordinal));
             return cfg == null ? null : new Client { ClientId = clientId, ClientName = cfg.DisplayName, Enabled = true, AllowedScopes = scopes, };
         }
     }
