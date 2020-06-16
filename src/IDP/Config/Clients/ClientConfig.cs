@@ -7,10 +7,18 @@
         public string Id { get; set; } = null!;
 
         public string DisplayName { get; set; } = null!;
-        \
+
         public IEnumerable<string> Validate()
         {
-            throw new System.NotImplementedException();
+            if (string.IsNullOrEmpty(this.Id))
+            {
+                yield return nameof(this.Id) + " for client not set";
+            }
+
+            if (string.IsNullOrEmpty(this.DisplayName))
+            {
+                yield return nameof(this.DisplayName) + $" for client {this.Id} not set";
+            }
         }
     }
 }

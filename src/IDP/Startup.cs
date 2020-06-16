@@ -3,18 +3,30 @@ namespace Playground.IDP.Application
     using IdentityServer4.Stores;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Playground.IDP.Application.Clients;
-    using Playground.IDP.Application.Resources;
+    using Microsoft.Extensions.Options;
+    using Playground.IDP.Application.Config;
+    using Playground.IDP.Application.Config.Clients;
+    using Playground.IDP.Application.Config.Resources;
 
     internal sealed class Startup
     {
+        private readonly IConfiguration configuration;
+
+        public Startup(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<SettingsConfig>(s => { });
+            services
+                .Configure<SettingsConfig>(this.configuration.GetSection("idsrv"))
+                .AddSingleton<IValidateOptions<SettingsConfig>, OptionsValidator<SettingsConfig>>();
 
             services.AddSingleton<IResourceStore, ConfigResourceStore>().AddSingleton<IClientStore, ConfigClientStore>();
 
