@@ -1,4 +1,4 @@
-﻿namespace Playground.IDP.Application.Resources
+﻿namespace Playground.IDP.Application.Config.Resources
 {
     using System;
     using System.Collections.Generic;
@@ -18,10 +18,10 @@
         {
             var resourcesByScope = new Dictionary<string, ApiResource>(StringComparer.Ordinal);
             this.resourcesByName = config.Value.Resources.ToDictionary(
-                r => r.Name,
+                r => r.Id,
                 r =>
                 {
-                    var apiResource = new ApiResource(r.Name, r.DisplayName);
+                    var apiResource = new ApiResource(r.Id, r.DisplayName);
                     foreach (var scope in apiResource.Scopes)
                     {
                         resourcesByScope.Add(scope.Name, apiResource);
