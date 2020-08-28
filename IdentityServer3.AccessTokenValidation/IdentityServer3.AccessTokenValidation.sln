@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessTokenValidation", "AccessTokenValidation\AccessTokenValidation.csproj", "{DF867B5D-3A9E-443A-B95E-D8F11E2A88A3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{3B51560B-B49C-438D-8F1A-64994BCCE9BE}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessTokenValidation.Tests", "AccessTokenValidation.Tests\AccessTokenValidation.Tests.csproj", "{0243A9FA-E484-43AD-A86C-F399ED79CCF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessTokenValidation.App", "AccessTokenValidation.App\AccessTokenValidation.App.csproj", "{9282298A-2B00-482A-97C9-17777F84014D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DF867B5D-3A9E-443A-B95E-D8F11E2A88A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF867B5D-3A9E-443A-B95E-D8F11E2A88A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF867B5D-3A9E-443A-B95E-D8F11E2A88A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF867B5D-3A9E-443A-B95E-D8F11E2A88A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0243A9FA-E484-43AD-A86C-F399ED79CCF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0243A9FA-E484-43AD-A86C-F399ED79CCF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0243A9FA-E484-43AD-A86C-F399ED79CCF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0243A9FA-E484-43AD-A86C-F399ED79CCF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9282298A-2B00-482A-97C9-17777F84014D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9282298A-2B00-482A-97C9-17777F84014D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9282298A-2B00-482A-97C9-17777F84014D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9282298A-2B00-482A-97C9-17777F84014D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8281A258-AFA0-406E-91D4-655D121F2E36}
+	EndGlobalSection
+EndGlobal
