@@ -20,9 +20,9 @@
             this.resourceStore = resourceStore;
         }
 
-        public async Task<Client?> FindClientByIdAsync(string clientId)
+        public async Task<Client> FindClientByIdAsync(string clientId)
         {
-            var scopes = (await this.resourceStore.GetAllEnabledResourcesAsync()).ApiResources.SelectMany(s => s.Scopes.Select(s => s.Name)).ToList();
+            var scopes = (await this.resourceStore.GetAllEnabledResourcesAsync()).ApiResources.SelectMany(s => s.Scopes).ToList();
             var cfg = this.clients.FirstOrDefault(c => c.Id.Equals(clientId, StringComparison.Ordinal));
             return cfg == null ? null : new Client { ClientId = clientId, ClientName = cfg.DisplayName, Enabled = true, AllowedScopes = scopes, };
         }
