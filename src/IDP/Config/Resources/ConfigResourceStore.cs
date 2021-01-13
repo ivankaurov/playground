@@ -11,32 +11,34 @@
 
     internal sealed class ConfigResourceStore : IResourceStore
     {
-        private readonly IReadOnlyDictionary<ApiScope, ApiResource> resourcesByScope;
-        private readonly IReadOnlyDictionary<string, ApiResource> resourcesByName;
-        private readonly IReadOnlyDictionary<string, ApiScope> scopes;
+        private static readonly IdentityResource[] PreDefined = { new IdentityResources.OpenId(), new IdentityResources.Profile(), };
+
+        private readonly IDictionary<ApiScope, ApiResource> resourcesByScope = new Dictionary<ApiScope, ApiResource>();
+
+        private readonly IDictionary<string, Resource> resourcesByName = new Dictionary<string, Resource>(StringComparer.Ordinal);
+
+        private readonly IDictionary<string, ApiScope>
+            scopes = new Dictionary<string, ApiScope>(StringComparer.Ordinal);
 
         public ConfigResourceStore(IOptions<SettingsConfig> config)
         {
-            var scopes = new Dictionary<string, ApiScope>(StringComparer.Ordinal);
-            var resourcesByScope = new Dictionary<ApiScope, ApiResource>();
-            this.resourcesByName = config.Value.Resources.ToDictionary(
-                r => r.Id,
-                r =>
+            foreach (var identityResource in PreDefined)
+            {
+                this.resourcesByName.Add(identityResource.Name, identityResource);
+            }
+
+            foreach (var r in config.Value.Resources)
+            {
+                var apiResource = new ApiResource(r.Id, r.DisplayName){ Enabled = true, };
+                foreach (var scopeName in apiResource.Scopes)
                 {
-                    var apiResource = new ApiResource(r.Id, r.DisplayName);
-                    foreach (var scopeName in apiResource.Scopes)
-                    {
-                        var scope = new ApiScope(scopeName);
-                        scopes.Add(scopeName, scope);
-                        resourcesByScope.Add(scope, apiResource);
-                    }
+                    var scope = new ApiScope(scopeName);
+                    this.scopes.Add(scopeName, scope);
+                    this.resourcesByScope.Add(scope, apiResource);
+                }
 
-                    return apiResource;
-                },
-                StringComparer.Ordinal);
-
-            this.resourcesByScope = resourcesByScope;
-            this.scopes = scopes;
+                this.resourcesByName.Add(r.Id, apiResource);
+            }
         }
 
         public Task<IEnumerable<ApiResource>> FindApiResourcesByScopeNameAsync(IEnumerable<string> scopeNames)
@@ -48,7 +50,8 @@
 
         public Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeNameAsync(IEnumerable<string> scopeNames)
         {
-            return Task.FromResult<IEnumerable<IdentityResource>>(Array.Empty<IdentityResource>());
+            var result = this.resourcesByName.Find(scopeNames).OfType<IdentityResource>();
+            return Task.FromResult(result);
         }
 
         public Task<IEnumerable<ApiScope>> FindApiScopesByNameAsync(IEnumerable<string> scopeNames)
@@ -58,12 +61,12 @@
 
         public Task<IEnumerable<ApiResource>> FindApiResourcesByNameAsync(IEnumerable<string> apiResourceNames)
         {
-            return Task.FromResult(this.resourcesByName.Find(apiResourceNames));
+            return Task.FromResult(this.resourcesByName.Find(apiResourceNames).OfType<ApiResource>());
         }
 
         public Task<Resources> GetAllResourcesAsync()
         {
-            return Task.FromResult(new Resources(Array.Empty<IdentityResource>(), this.resourcesByName.Values, this.resourcesByScope.Keys));
+            return Task.FromResult(new Resources(Array.Empty<IdentityResource>(), this.resourcesByScope.Values, this.resourcesByScope.Keys));
         }
     }
 }

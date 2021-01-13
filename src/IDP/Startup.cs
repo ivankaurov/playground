@@ -1,3 +1,8 @@
+using System;
+using System.Runtime.ExceptionServices;
+using IdentityServerHost.Quickstart.UI;
+using Microsoft.AspNetCore.HttpOverrides;
+
 namespace Playground.IDP.Application
 {
     using IdentityServer4.Stores;
@@ -25,12 +30,24 @@ namespace Playground.IDP.Application
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .AddControllersWithViews(opt =>
+                {
+                });
+
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
+            });
+
+            services
                 .Configure<SettingsConfig>(this.configuration.GetSection("idsrv"))
                 .AddSingleton<IValidateOptions<SettingsConfig>, OptionsValidator<SettingsConfig>>();
 
             services.AddSingleton<IResourceStore, ConfigResourceStore>().AddSingleton<IClientStore, ConfigClientStore>();
 
-            services.AddIdentityServer().AddDeveloperSigningCredential(persistKey: false);
+            services.AddIdentityServer()
+                .AddDeveloperSigningCredential(persistKey: false)
+                .AddTestUsers(TestUsers.Users);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,7 +58,30 @@ namespace Playground.IDP.Application
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
+
+            app.Use(async (context, next) =>
+            {
+                try
+                {
+                    await next();
+                }
+                catch (Exception ex)
+                {
+                    ExceptionDispatchInfo.Throw(ex);
+                }
+            });
+
+            app.UseForwardedHeaders();
+
+            app.UseRouting();
+
             app.UseIdentityServer();
+            app.UseAuthorization();
+            app.UseEndpoints(e =>
+            {
+                e.MapDefaultControllerRoute();
+            });
         }
     }
 }

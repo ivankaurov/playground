@@ -8,6 +8,10 @@
 
         public string DisplayName { get; set; } = null!;
 
+        public string Secret { get; set; }
+
+        public string RedirectUri { get; set; }
+
         public IEnumerable<string> Validate()
         {
             if (string.IsNullOrEmpty(this.Id))

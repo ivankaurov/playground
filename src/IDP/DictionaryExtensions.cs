@@ -6,7 +6,7 @@
     internal static class DictionaryExtensions
     {
         public static IEnumerable<TValue> Find<TKey, TValue>(
-            this IReadOnlyDictionary<TKey, TValue> dictionary,
+            this IDictionary<TKey, TValue> dictionary,
             IEnumerable<TKey> keys)
         {
             return keys
