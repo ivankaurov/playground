@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PackageReference Update="Newtonsoft.Json" Version="10.0.1" />
+    <PackageReference Update="Microsoft.Azure.SignalR" Version="1.7.1" />
+  </ItemGroup>
+</Project>
